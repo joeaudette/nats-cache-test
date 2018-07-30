@@ -28,16 +28,23 @@ namespace nats_cache_test
             services.AddMultitenancy<Tenant, CachingResolver>();
             // services.AddSingleton();
             services.AddMemoryCache();
-            
-            var sp = services.BuildServiceProvider();
-            services.AddSingleton(new EventService(sp.GetService<IMemoryCache>(),  _loggerFactory.CreateLogger(typeof(EventService))));
+
+            //var sp = services.BuildServiceProvider();
+            //services.AddSingleton(new EventService(sp.GetService<IMemoryCache>(),  _loggerFactory.CreateLogger(typeof(EventService))));
+            services.AddSingleton<EventService>();
 
             services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(
+            IApplicationBuilder app, 
+            IHostingEnvironment env,
+            EventService eventService // not really using EventService here but this makes sure it gets created when the app is starting
+            )
         {
+            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
